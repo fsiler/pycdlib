@@ -2667,3 +2667,11 @@ def test_parse_get_file_from_iso(tmpdir):
 
     with open(foofile, 'r') as infp:
         assert(infp.read() == 'foo\n')
+
+def test_parse_udf_nofiles(tmpdir):
+    indir = tmpdir.mkdir("udfnofiles")
+    outfile = str(indir)+".iso"
+    subprocess.call(["genisoimage", "-v", "-v", "-no-pad", "-iso-level", "1",
+                     "-udf", "-o", str(outfile), str(indir)])
+
+    do_a_test(tmpdir, outfile, check_udf_nofiles)

@@ -19,6 +19,9 @@ def do_a_test(iso, check_func):
     out = BytesIO()
     iso.write_fp(out)
 
+    with open('/home/clalancette/upstream/pycdlib/debug.iso', 'w') as outfp:
+        outfp.write(out.getvalue())
+
     check_func(iso, len(out.getvalue()))
 
     iso2 = pycdlib.PyCdlib()
@@ -3636,5 +3639,13 @@ def test_new_clear_hidden_too_many_paths():
     iso.add_fp(BytesIO(aastr), len(aastr), "/AAAAAAAA.;1", joliet_path="/aaaaaaaa")
     with pytest.raises(pycdlib.pycdlibexception.PyCdlibInvalidInput):
         iso.clear_hidden(iso_path='/AAAAAAAA.;1', joliet_path='/aaaaaaaa')
+
+    iso.close()
+
+def test_new_udf_nofiles(tmpdir):
+    iso = pycdlib.PyCdlib()
+    iso.new(udf=True)
+
+    do_a_test(iso, check_udf_nofiles)
 
     iso.close()
